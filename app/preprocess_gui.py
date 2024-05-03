@@ -170,20 +170,45 @@ class PreprocessPage(tk.Frame):
         )
         
         # Dataset operations
-        preprocess_canvas.create_rectangle(
-            25,    # x0
-            470,    # y0
-            650,    # x1
-            720,    # y1
-            fill="#FFFFFF",
-        )
-
         preprocess_canvas.create_text(
             115,
             450,
             text='DATASET OPERATIONS:'
         )
-
+        
+        operations_canvas = tk.Canvas(
+            self,
+            bg = "#282828",
+            height =251,
+            width = 626,
+            bd = 0,
+            highlightthickness = 0,
+            relief = "ridge"
+        )
+        operations_canvas.place(x=275, y=525)
+        
+        # Create tab container
+        operations_tab = ttk.Notebook(operations_canvas, width=605, height=215)
+        operations_tab.place(x=-17, y=-10)
+        
+        # Create frames for tabs
+        cleaning_tab = tk.Frame(operations_tab, bg='#282828')
+        column_tab = tk.Frame(operations_tab, bg='#282828')
+        sorting_tab = tk.Frame(operations_tab, bg='#282828')
+        concatenation_tab = tk.Frame(operations_tab, bg='#282828')
+        merge_tab = tk.Frame(operations_tab, bg='#282828')
+        aggregate_tab = tk.Frame(operations_tab, bg='#282828')
+        pivot_tab = tk.Frame(operations_tab, bg='#282828')
+        
+        # Add tabs to container
+        operations_tab.add(cleaning_tab, text='Clean', sticky="nsew")
+        operations_tab.add(column_tab, text='Column', sticky="nsew")
+        operations_tab.add(sorting_tab, text='Sort', sticky="nsew")
+        operations_tab.add(concatenation_tab, text='Concatenate', sticky="nsew")
+        operations_tab.add(merge_tab, text='Merge', sticky="nsew")
+        operations_tab.add(aggregate_tab, text='Aggregate', sticky="nsew")
+        operations_tab.add(pivot_tab, text='Pivot', sticky="nsew")
+        
 
 def tree_view_style():
     # Create a custom style
