@@ -10,7 +10,7 @@ root.resizable(None, None)    # disable resizing
 # Dataframe view
 frame1 = tk.LabelFrame(root, text="Data")
 frame1.place(x=10, y=10, height=500, width=780)
-
+1
 # Plot view
 frame2 = tk.LabelFrame(root, text="Plot")
 frame2.place(x=810, y=10, height=500, width=780)
