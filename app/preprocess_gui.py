@@ -1,17 +1,21 @@
+# Library imports
 import tkinter as tk
 
 from tkinter import ttk
 from pathlib import Path
 
+# Module imports
 from features.data_preprocessing.dataset_view import populate_treeview
 from features.data_preprocessing.dataset_overview import retrieve_info 
 from features.data_import.file_explorer import populate_file_explorer_treeview
+from features.data_preprocessing.dataset_operations import create_tabs
+from features.data_import.dataset_selection import DataSelect
+from features.data_import.file_explorer import on_select
+from features.data_export.dataframe_export import dataframe_to_csv_export
 
-ASSETS_PATH = Path(r"/Users/bryanmelo/Documents/GitHub/cs122/app/assets/frame0")
 
-
-def relative_to_assets(path: str) -> Path:
-    return ASSETS_PATH / Path(path)
+# Dataset initializer
+data_select = DataSelect(file_name='../cs122/app/datasets/AppleStore.csv') 
 
 
 class PreprocessPage(tk.Frame):
@@ -42,8 +46,7 @@ class PreprocessPage(tk.Frame):
         preprocess_button = tk.Button(
             self,
             text='Preprocess',
-            fg='red',
-            #command=self.preprocess_data
+            fg='blue',
         )
         
         preprocess_button.place(
@@ -65,7 +68,7 @@ class PreprocessPage(tk.Frame):
             width=150.0,
             height=55.0
         )
-
+        
         # Explorer view 
         canvas.create_text(
             70.0,
@@ -84,7 +87,39 @@ class PreprocessPage(tk.Frame):
         )
         file_explorer_canvas.place(x=0, y=55)
         
-        populate_file_explorer_treeview(file_explorer_canvas)
+        file_explorer_treeview = ttk.Treeview(file_explorer_canvas)
+        file_explorer_treeview.place(x=0, y=0, width=250, height=745)
+        
+        populate_file_explorer_treeview(file_explorer_treeview)
+                        
+        # Export button
+        export_button = tk.Button(
+            self,
+            text='Export',
+            command=lambda: dataframe_to_csv_export(data_select, file_explorer_treeview),
+            fg='green'
+        )
+        
+        export_button.place(
+            x=1130.0,
+            y=0.0,
+            width=150.0,
+            height=55.0,
+        )
+        
+        # Load button
+        load_button = ttk.Button(
+            self,
+            text='Load',
+            command=lambda: on_select(file_explorer_treeview, data_select),
+        )
+        
+        load_button.place(
+            x=0.0,
+            y=770.0,
+            width=250.0,
+            height=35.0,
+        )
         
         # Dataset canvas
         preprocess_canvas = tk.Canvas(
@@ -102,6 +137,18 @@ class PreprocessPage(tk.Frame):
             1000,    # x1
             400,    # y1
             fill="#FFFFFF",
+        )
+        
+        # Undo button
+        undo_button = ttk.Button(
+            preprocess_canvas,
+            text='Undo',
+            command=lambda: data_select.undo_changes(),
+        )
+        
+        undo_button.place(
+            x=555.0,
+            y=435.0,
         )
 
         preprocess_canvas.create_text(
@@ -127,7 +174,10 @@ class PreprocessPage(tk.Frame):
         view_tree.configure(yscrollcommand=view_tree_scroll_y.set, xscrollcommand=view_tree_scroll_x.set)
 
         # Populate tree_view
-        populate_treeview(view_tree)
+        tree = populate_treeview(view_tree, data_select.df)
+        
+        # Add tree_view to data_select
+        data_select.tree_view = tree
 
         ## Dataset overview
         preprocess_canvas.create_text(
@@ -136,14 +186,14 @@ class PreprocessPage(tk.Frame):
             text='DATASET OVERVIEW:'
         )
           
-        overview_canvas = tk.Canvas(
+        df_info_canvas = overview_canvas = tk.Canvas(
             self,
             bg='#282828',
             width=310,
             height=231,
         )
         overview_canvas.place(x=935, y=525)
-
+        
         # Create scrollbars for overview_canvas
         overview_scroll_y = ttk.Scrollbar(self, orient="vertical", command=overview_canvas.yview)
         overview_scroll_x = ttk.Scrollbar(self, orient="horizontal", command=overview_canvas.xview)
@@ -155,11 +205,14 @@ class PreprocessPage(tk.Frame):
         # Configure the canvas to use the scrollbars
         overview_canvas.configure(yscrollcommand=overview_scroll_y.set, xscrollcommand=overview_scroll_x.set)
         
+        # Add canvas to data_select
+        data_select.df_info_canvas = df_info_canvas
+        
         # Retrieve dataset .info 
-        info_text = retrieve_info()
+        info_text = retrieve_info(data_select.df)
         overview_text = "\n".join(info_text[1:-3])
         
-        overview_canvas.create_text(
+        df_info = overview_canvas.create_text(
             10,
             10,
             anchor='nw',
@@ -168,6 +221,9 @@ class PreprocessPage(tk.Frame):
             font=("KaiseiTokumin Regular", 14),
             justify='left'
         )
+        
+        # Add df_info to data_select
+        data_select.df_info = df_info
         
         # Dataset operations
         preprocess_canvas.create_text(
@@ -187,40 +243,22 @@ class PreprocessPage(tk.Frame):
         )
         operations_canvas.place(x=275, y=525)
         
-        # Create tab container
-        operations_tab = ttk.Notebook(operations_canvas, width=605, height=215)
-        operations_tab.place(x=-17, y=-10)
+        # Create tabs for dataset operations
+        create_tabs(operations_canvas, data_select)
+
+
+    def tree_view_style():
+        # Create a custom style
+        style = ttk.Style()
+
+        # Configure the custom style
+        style.configure("Custom.Treeview", background="#282828", foreground="white", fieldbackground="#282828")
+        style.map("Custom.Treeview", background=[("selected", "#558CC1")])  # Change selected item background color
+        style.configure("Custom.Treeview.Heading", foreground="white")  # Change column text color
+
+        style.configure("Vertical.TScrollbar", troughcolor="#282828", background="#1f1f1f", arrowcolor="white")
+        style.map("Vertical.TScrollbar", background=[("active", "#1f1f1f")])
+
+        style.configure("Horizontal.TScrollbar", troughcolor="#282828", background="#1f1f1f", arrowcolor="white")
+        style.map("Horizontal.TScrollbar", background=[("active", "#1f1f1f")])
         
-        # Create frames for tabs
-        cleaning_tab = tk.Frame(operations_tab, bg='#282828')
-        column_tab = tk.Frame(operations_tab, bg='#282828')
-        sorting_tab = tk.Frame(operations_tab, bg='#282828')
-        concatenation_tab = tk.Frame(operations_tab, bg='#282828')
-        merge_tab = tk.Frame(operations_tab, bg='#282828')
-        aggregate_tab = tk.Frame(operations_tab, bg='#282828')
-        pivot_tab = tk.Frame(operations_tab, bg='#282828')
-        
-        # Add tabs to container
-        operations_tab.add(cleaning_tab, text='Clean', sticky="nsew")
-        operations_tab.add(column_tab, text='Column', sticky="nsew")
-        operations_tab.add(sorting_tab, text='Sort', sticky="nsew")
-        operations_tab.add(concatenation_tab, text='Concatenate', sticky="nsew")
-        operations_tab.add(merge_tab, text='Merge', sticky="nsew")
-        operations_tab.add(aggregate_tab, text='Aggregate', sticky="nsew")
-        operations_tab.add(pivot_tab, text='Pivot', sticky="nsew")
-        
-
-def tree_view_style():
-    # Create a custom style
-    style = ttk.Style()
-
-    # Configure the custom style
-    style.configure("Custom.Treeview", background="#282828", foreground="white", fieldbackground="#282828")
-    style.map("Custom.Treeview", background=[("selected", "#558CC1")])  # Change selected item background color
-    style.configure("Custom.Treeview.Heading", foreground="white")  # Change column text color
-
-    style.configure("Vertical.TScrollbar", troughcolor="#282828", background="#1f1f1f", arrowcolor="white")
-    style.map("Vertical.TScrollbar", background=[("active", "#1f1f1f")])
-
-    style.configure("Horizontal.TScrollbar", troughcolor="#282828", background="#1f1f1f", arrowcolor="white")
-    style.map("Horizontal.TScrollbar", background=[("active", "#1f1f1f")])
