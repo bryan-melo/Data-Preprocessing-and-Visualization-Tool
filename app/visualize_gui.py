@@ -823,4 +823,3 @@ class MyEntry(tk.Entry):
         self.grid(row=row, column=column, padx=padx, pady=pady)
         
 
-App()

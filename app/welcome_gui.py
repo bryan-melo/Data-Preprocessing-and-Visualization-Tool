@@ -1,7 +1,7 @@
 import tkinter as tk
 
 from preprocess_gui import PreprocessPage
-from visualize_gui import VisualizePage
+#from visualize_gui import VisualizePage
 
 class WelcomePage(tk.Frame):
     def __init__(self, parent, controller):

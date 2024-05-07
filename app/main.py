@@ -4,7 +4,7 @@ import tkinter as tk
 # Module imports
 from preprocess_gui import PreprocessPage
 from welcome_gui import WelcomePage
-from visualize_gui import VisualizePage
+#from visualize_gui import VisualizePage
 
 
 class MainApp(tk.Tk):
