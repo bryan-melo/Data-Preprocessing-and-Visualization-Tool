@@ -114,7 +114,7 @@ def melt_labels(melt_frame, data_select):
     value_name_input.place(x=250, y=170)
     
     # submit button
-    melt_submit_button = ttk.Button(melt_frame, text='Submit', command=lambda: submit_values({'id_vars': id_vars_input.get(), 'value_vars': value_vars_input.get(), 'var_name': var_name_input.get(), 'value_name': value_name_input}, melt_data, data_select))
+    melt_submit_button = ttk.Button(melt_frame, text='Submit', command=lambda: submit_values({'id_vars': id_vars_input.get(), 'value_vars': value_vars_input.get(), 'var_name': var_name_input.get(), 'value_name': value_name_input.get()}, melt_data, data_select))
     melt_submit_button.place(x=525, y=200)
     
     
@@ -489,7 +489,7 @@ def astype(values, data_select):
         print(f'column {col} does not exist in the DataFrame')
         return
     
-    df.astype({col: dtype}).dtypes
+    df.col = df.astype({col: dtype}).dtypes
     data_select.update_df(df)
     
     print('astype successful')

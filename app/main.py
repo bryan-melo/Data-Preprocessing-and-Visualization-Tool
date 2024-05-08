@@ -10,7 +10,7 @@ from visualize_gui import App
 class MainApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        self.wm_title("DataViz - Preprocess")
+        self.wm_title("DataViz")
         self.geometry("1280x800")
 
         container = tk.Frame(self)
