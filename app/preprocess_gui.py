@@ -5,6 +5,7 @@ from tkinter import ttk
 from pathlib import Path
 
 # Module imports
+from visualize_gui import App
 from features.data_preprocessing.dataset_view import populate_treeview
 from features.data_preprocessing.dataset_overview import retrieve_info 
 from features.data_import.file_explorer import populate_file_explorer_treeview
@@ -59,7 +60,7 @@ class PreprocessPage(tk.Frame):
         visualize_button = tk.Button(
             self,
             text='Visualize',
-            #command=self.visualize_data
+            command=lambda: controller.show_frame(App)
         )
         
         visualize_button.place(

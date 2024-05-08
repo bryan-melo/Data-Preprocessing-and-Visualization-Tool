@@ -1,7 +1,7 @@
 import tkinter as tk
 
 from preprocess_gui import PreprocessPage
-#from visualize_gui import VisualizePage
+from visualize_gui import App
 
 class WelcomePage(tk.Frame):
     def __init__(self, parent, controller):
@@ -38,7 +38,7 @@ class WelcomePage(tk.Frame):
         switch_window_button2 = tk.Button(
             self,
             text="Visualize Data",
-            command=lambda: controller.show_frame(VisualizePage),
+            command=lambda: controller.show_frame(App),
             height=3,
             width=20,
             font=('Arial', 24),

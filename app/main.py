@@ -4,7 +4,7 @@ import tkinter as tk
 # Module imports
 from preprocess_gui import PreprocessPage
 from welcome_gui import WelcomePage
-#from visualize_gui import VisualizePage
+from visualize_gui import App
 
 
 class MainApp(tk.Tk):
@@ -20,7 +20,7 @@ class MainApp(tk.Tk):
         container.grid_columnconfigure(0, weight=1)      
         
         self.frames = {}
-        for F in (WelcomePage, PreprocessPage):
+        for F in (WelcomePage, PreprocessPage, App):
             frame = F(container, self)
             
             self.frames[F] = frame

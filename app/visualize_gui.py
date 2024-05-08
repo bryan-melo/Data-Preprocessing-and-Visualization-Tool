@@ -325,11 +325,10 @@ def plot_barplot1(parent_frame, x, order):
         errorLabel.pack(side="top", padx=10, pady=10)
         errorLabel.config(text=f"Error: {ex}")
 
-class App(tk.Tk):
-    def __init__(self):
-        super().__init__()
-        self.title("DataViz")
-        self.geometry('1200x1200')
+class App(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        
         self.config(bg='navy')
         #add canvas
         self.canvas = MyCanvas(self, 410, 800)
@@ -756,8 +755,7 @@ class App(tk.Tk):
         #Adding Button For Option 1 Frame
         self.button1_barplot_tab = MyButton(self.barplot1_frame, "Plot", lambda: plot_barplot1(self.visualization_frame, self.selected_x1_barplot_tab.get(), self.selected_order1_barplot_tab.get()))
         self.button1_barplot_tab.to_grid(3, 1, 10, 10)
-        
-        self.mainloop()
+
 
 class MyCanvas(tk.Canvas):
     def __init__(self, parent, width, height):
@@ -822,4 +820,3 @@ class MyEntry(tk.Entry):
     def to_grid(self, row, column, padx, pady):
         self.grid(row=row, column=column, padx=padx, pady=pady)
         
-
