@@ -1,4 +1,4 @@
-﻿# Data Pre=processing and Visualization Tool
+﻿# Data Pre-processing and Visualization Tool
 
 ## Running DataViz tkinter Application
 
